@@ -47,8 +47,20 @@
         }
     }
 
+	function base64ToArray(base64) {
+  		var raw = window.atob(base64);
+  		var rawLength = raw.length;
+  		var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+  		for(i = 0; i < rawLength; i++) {
+    		array[i] = raw.charCodeAt(i);
+  		}
+  		return array;
+	}
 
     function hexToArray(hex){
+    	if(!/^\s*(?:[a-f0-9]{2}\s*)*$/i.test(hex))
+    		throw new Error('Input is not hex encoded!');
 		return new Uint8Array((hex.match(/[\da-f]{2}/gi) || []).map(function (h) {
   			return parseInt(h, 16)
 		}))
@@ -87,7 +99,7 @@
       	var format = $('input[name="format"]:checked').val()
       	var message = input.val();
       	if(format === 'base64')
-      		message = atob(message);
+      		message = base64ToArray(message);
       	if(format === 'hex')
 		    message = hexToArray(message);
 
